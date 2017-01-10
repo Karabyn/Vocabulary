@@ -10,7 +10,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
     protected void onStart() {
         super.onStart();
     }
@@ -18,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-    protected void kuzyk()
-    {};
+
+    public void scanavi()
+    {
+
+    }
 }
