@@ -1,18 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.detsyky.vocabulary.MainActivity">
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/hi"/>
-</RelativeLayout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.detsyky.vocabulary.MainActivity">
+
+        <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+        <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="0px"
+            android:layout_height="0px"/>
+
+        <EditText
+            android:id="@+id/word_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Word"
+            android:ems="10"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/translation_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/word_input"
+            android:inputType="text"
+            android:hint="Translation"
+            android:ems="10" />
+
+        <Button
+            android:id="@+id/add_word_button"
+            android:text="Add word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/translation_input"
+            android:layout_centerHorizontal="true"
+            android:onClick="addWord"/>
+
+        <TableLayout
+            android:id="@+id/vocabulary_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/add_word_button"
+            android:layout_marginTop="16dp"
+            android:stretchColumns="0,1"
+            android:visibility="invisible">
+
+            <TableRow
+                android:id="@+id/vocabulary_table_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/word_table_header"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_column="0"
+                        android:paddingStart="4dp"
+                        android:text="Word"
+                        android:textStyle="normal|bold"
+                        android:background="@drawable/cell_background" />
+
+                    <TextView
+                        android:id="@+id/translation_table_header"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_column="1"
+                        android:paddingStart="4dp"
+                        android:text="Translation"
+                        android:textStyle="normal|bold"
+                        android:background="@drawable/cell_background"/>
+            </TableRow>
+
+        </TableLayout>
+
+    </RelativeLayout>
+
+</ScrollView>
