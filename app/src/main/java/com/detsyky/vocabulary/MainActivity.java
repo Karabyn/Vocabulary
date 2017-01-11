@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         translation_input.setText("");
     }
 
+    // dynamically adds user input to the table.
+    // Creates new TextView fields and a new TableRow
     private void addWordToTable(String word, String translation) {
         ViewGroup.LayoutParams params;
         TableLayout vocabulary_table = (TableLayout)findViewById(R.id.vocabulary_table);
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         vocabulary_table.addView(tableRow);
     }
 
-    //temporary method.
+    //temporary method
     private void addWordToArray(String word, String translation) {
         words_array.add(word);
         translations_array.add(translation);
