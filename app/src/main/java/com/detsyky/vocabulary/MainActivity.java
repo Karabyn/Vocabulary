@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /**
+     * gets user input and calls external method to add the word
+     * @since 11.01.2017
+     * */
     public void addWord(View v) {
         EditText word_input = (EditText) findViewById(R.id.word_input);
         EditText translation_input = (EditText) findViewById(R.id.translation_input);
@@ -43,8 +47,13 @@ public class MainActivity extends AppCompatActivity {
         translation_input.setText("");
     }
 
-    // dynamically adds user input to the table.
-    // Creates new TextView fields and a new TableRow
+    /**
+     * dynamically adds word to the table.
+     * Creates new TextView fields and a new TableRow
+     * @param word string from addWord method
+     * @param translation string from addWord method
+     * @since 11.02.2017
+     */
     private void addWordToTable(String word, String translation) {
         ViewGroup.LayoutParams params;
         TableLayout vocabulary_table = (TableLayout)findViewById(R.id.vocabulary_table);
