@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         vocabulary_table.addView(tableRow);
     }
 
-    //temporary method.
+    //temporary method
     private void addWordToArray(String word, String translation) {
         words_array.add(word);
         translations_array.add(translation);
