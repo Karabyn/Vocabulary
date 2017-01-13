@@ -1,5 +1,9 @@
 package com.detsyky.vocabulary;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -15,11 +20,13 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> words_array = new ArrayList<>(); // temporary
     private ArrayList<String> translations_array = new ArrayList<>(); // temporary
-
+    private DatabaseHelper dbHelper;
+    SQLiteDatabase database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dbHelper = new DatabaseHelper(this);
     }
 
     protected void onStart() {
@@ -41,10 +48,18 @@ public class MainActivity extends AppCompatActivity {
         EditText translation_input = (EditText) findViewById(R.id.translation_input);
         String word = word_input.getText().toString();
         String translation = translation_input.getText().toString();
-        addWordToTable(word, translation);
-        addWordToArray(word, translation);
-        word_input.setText(""); // clean EditText input fields
-        translation_input.setText("");
+        if(!word.equals("")) {
+            addWordToDatabase(word, translation);
+            addWordToTable();
+            addWordToArray(word, translation);
+            word_input.setText(""); // clean EditText input fields
+            translation_input.setText("");
+        }
+        else
+        {
+            Toast toast = Toast.makeText(this, "Please enter the word!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     /**
@@ -54,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
      * @param translation string from addWord method
      * @since 11.02.2017
      */
-    private void addWordToTable(String word, String translation) {
+    private void addWordToDatabase(String word, String translation)
+    {
+        database = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(dbHelper.COLUMN_WORD,word);
+        contentValues.put(dbHelper.COLUMN_TRANSLATE,translation);
+        database.insert(dbHelper.TABLE_NAME,null, contentValues);
+    }
+    private void addWordToTable() {
         ViewGroup.LayoutParams params;
         TableLayout vocabulary_table = (TableLayout)findViewById(R.id.vocabulary_table);
         vocabulary_table.setVisibility(View.VISIBLE);
@@ -62,6 +85,15 @@ public class MainActivity extends AppCompatActivity {
         TableRow tableRow = new TableRow(this);
         TextView wordTextView = new TextView(this);
         TextView translationTextView = new TextView(this);
+        String word = "";
+        String translation = "";
+        Cursor cursor = database.query(dbHelper.TABLE_NAME,null,null,null,null,null,null);
+
+        if(cursor.moveToLast())
+        {
+            word = cursor.getString(1);
+            translation = cursor.getString(2);
+        }
 
         TextView word_table_header = (TextView) findViewById(R.id.word_table_header);
         params = word_table_header.getLayoutParams();
