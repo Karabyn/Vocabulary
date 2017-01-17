@@ -39,21 +39,31 @@
             android:inputType="text"
             android:hint="@string/translation"
             android:ems="10" />
-
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/Buttons"
+    android:layout_below="@+id/translation_input"
+    android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/translate_button"
+            android:text="Translate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="translate" />
         <Button
             android:id="@+id/add_word_button"
             android:text="@string/add_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/translation_input"
-            android:layout_centerHorizontal="true"
             android:onClick="addWord"/>
-
+</LinearLayout>
         <TableLayout
             android:id="@+id/vocabulary_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/add_word_button"
+            android:layout_below="@id/Buttons"
             android:layout_marginTop="16dp"
             android:stretchColumns="0,1"
             android:visibility="invisible">

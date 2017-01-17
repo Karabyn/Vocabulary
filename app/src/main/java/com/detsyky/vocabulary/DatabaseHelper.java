@@ -13,7 +13,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private final static int DATABASE_VERSION = 1;
     public final static String DATABASE_NAME = "vocabular";
     public final static String TABLE_NAME = "WORDS";
-
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_WORD = "word";
     public static final String COLUMN_TRANSLATE = "translate";
@@ -25,8 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("create table " + TABLE_NAME + "(" + COLUMN_ID
-        + " integer primary key," + COLUMN_WORD + " text," + COLUMN_TRANSLATE + " text" + ")");
-
+        + " integer primary key autoincrement," + COLUMN_WORD + " text," + COLUMN_TRANSLATE + " text" + ")");
     }
 
     @Override

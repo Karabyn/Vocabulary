@@ -3,7 +3,6 @@ package com.detsyky.vocabulary;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,20 +12,21 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.detsyky.vocabulary.Translator.Translate;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<String> words_array = new ArrayList<>(); // temporary
-    private ArrayList<String> translations_array = new ArrayList<>(); // temporary
     private DatabaseHelper dbHelper;
     SQLiteDatabase database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbHelper = new DatabaseHelper(this);
+        Translate.setKey("trnsl.1.1.20170116T214127Z.36a136aae5abc0a2.4273e8f2d437ee78105aa45d6ccaf32c005fb8a5");
     }
 
     protected void onStart() {
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         if(!word.equals("")) {
             addWordToDatabase(word, translation);
             addWordToTable();
-            addWordToArray(word, translation);
             word_input.setText(""); // clean EditText input fields
             translation_input.setText("");
         }
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
     }
+
 
     /**
      * dynamically adds word to the table.
@@ -112,12 +112,29 @@ public class MainActivity extends AppCompatActivity {
         tableRow.addView(wordTextView);
         tableRow.addView(translationTextView);
         vocabulary_table.addView(tableRow);
+        database.close();
+        cursor.close();
     }
 
-    //temporary method
-    private void addWordToArray(String word, String translation) {
-        words_array.add(word);
-        translations_array.add(translation);
+
+
+    public void translate(View view)
+    {
+        RetrieveFeedTask elseThread = new RetrieveFeedTask();
+        EditText et = (EditText)findViewById(R.id.word_input);
+        String wordToTranslate = et.getText().toString();
+        EditText et2 = (EditText)findViewById(R.id.translation_input);
+        String translation = "";
+        elseThread.execute(wordToTranslate);
+        try {
+            translation = elseThread.get().toString();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        et2.setText(translation);
+
     }
 
 }
