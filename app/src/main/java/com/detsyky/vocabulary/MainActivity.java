@@ -21,7 +21,7 @@ import com.detsyky.vocabulary.Translator.Translate;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private DatabaseHelper dbHelper;
     SQLiteDatabase database;
@@ -44,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    protected void onResume() { super.onResume(); }
+    protected void onResume() { super.onResume();
+    first_table_display();
+    }
 
     protected void onDestroy() {
         super.onDestroy();
@@ -141,6 +143,48 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         et2.setText(translation);
+    }
 
+    public void first_table_display()
+    {
+        ViewGroup.LayoutParams params;
+        TableLayout vocabulary_table = (TableLayout)findViewById(R.id.vocabulary_table);
+        vocabulary_table.setVisibility(View.VISIBLE);
+
+
+        String word = "";
+        String translation = "";
+        database = dbHelper.getWritableDatabase();
+        Cursor cursor = database.query(dbHelper.TABLE_NAME, null, null, null, null, null, null);
+        cursor.moveToFirst();
+        do
+        {
+            TableRow tableRow = new TableRow(this);
+            TextView wordTextView = new TextView(this);
+            TextView translationTextView = new TextView(this);
+            word = cursor.getString(1);
+            translation = cursor.getString(2);
+            TextView word_table_header = (TextView) findViewById(R.id.word_table_header);
+            params = word_table_header.getLayoutParams();
+            wordTextView.setLayoutParams(params);
+            wordTextView.setPaddingRelative(4, 0, 0, 0);
+            wordTextView.setBackgroundResource(R.drawable.cell_background);
+            wordTextView.setText(word);
+
+            TextView translation_table_header = (TextView) findViewById(R.id.translation_table_header);
+            params = translation_table_header.getLayoutParams();
+            translationTextView.setLayoutParams(params);
+            translationTextView.setPaddingRelative(4, 0, 0, 0);
+            translationTextView.setBackgroundResource(R.drawable.cell_background);
+            translationTextView.setText(translation);
+
+            tableRow.addView(wordTextView);
+            tableRow.addView(translationTextView);
+            vocabulary_table.addView(tableRow);
+
+        }
+        while (cursor.moveToNext());
+        database.close();
+        cursor.close();
     }
 }
