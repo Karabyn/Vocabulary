@@ -5,13 +5,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.detsyky.vocabulary.Translator.Language;
 import com.detsyky.vocabulary.Translator.Translate;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -20,13 +25,19 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
     SQLiteDatabase database;
-
+    private ArrayList<String> langSpinner = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbHelper = new DatabaseHelper(this);
         Translate.setKey("trnsl.1.1.20170116T214127Z.36a136aae5abc0a2.4273e8f2d437ee78105aa45d6ccaf32c005fb8a5");
+        FirstActivity.pref = getSharedPreferences("main",MODE_PRIVATE);
+        String savedText = FirstActivity.pref.getString("VocabName","").toString();
+        langSpinner.add(savedText);
+        Spinner spinner = (Spinner)findViewById(R.id.SpinVoc);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, langSpinner);
+        spinner.setAdapter(adapter);
     }
 
     protected void onStart() {
@@ -60,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
     }
-
-
     /**
      * dynamically adds word to the table.
      * Creates new TextView fields and a new TableRow
@@ -69,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
      * @param translation string from addWord method
      * @since 11.02.2017
      */
-    private void addWordToDatabase(String word, String translation)
-    {
+    private void addWordToDatabase(String word, String translation) {
         database = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(dbHelper.COLUMN_WORD,word);
         contentValues.put(dbHelper.COLUMN_TRANSLATE,translation);
         database.insert(dbHelper.TABLE_NAME,null, contentValues);
     }
+
     private void addWordToTable() {
         ViewGroup.LayoutParams params;
         TableLayout vocabulary_table = (TableLayout)findViewById(R.id.vocabulary_table);
@@ -88,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         String word = "";
         String translation = "";
         Cursor cursor = database.query(dbHelper.TABLE_NAME,null,null,null,null,null,null);
+
 
         if(cursor.moveToLast())
         {
@@ -116,10 +126,7 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
     }
 
-
-
-    public void translate(View view)
-    {
+    public void translate(View view) {
         RetrieveFeedTask elseThread = new RetrieveFeedTask();
         EditText et = (EditText)findViewById(R.id.word_input);
         String wordToTranslate = et.getText().toString();
@@ -136,5 +143,4 @@ public class MainActivity extends AppCompatActivity {
         et2.setText(translation);
 
     }
-
 }

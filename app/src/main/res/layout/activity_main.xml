@@ -58,6 +58,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="addWord"/>
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/SpinVoc">
+        </Spinner>
 </LinearLayout>
         <TableLayout
             android:id="@+id/vocabulary_table"
