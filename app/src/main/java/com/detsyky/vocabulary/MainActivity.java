@@ -1,6 +1,7 @@
 package com.detsyky.vocabulary;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
@@ -21,10 +22,12 @@ import com.detsyky.vocabulary.Translator.Translate;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private DatabaseHelper dbHelper;
     SQLiteDatabase database;
+    public static final String TAG="message";
+
     private ArrayList<String> langSpinner = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +116,7 @@ public class MainActivity extends AppCompatActivity{
         wordTextView.setPaddingRelative(4, 0, 0, 0);
         wordTextView.setBackgroundResource(R.drawable.cell_background);
         wordTextView.setText(word);
+        wordTextView.setOnClickListener(this);
 
         TextView translation_table_header = (TextView) findViewById(R.id.translation_table_header);
         params = translation_table_header.getLayoutParams();
@@ -156,35 +160,46 @@ public class MainActivity extends AppCompatActivity{
         String translation = "";
         database = dbHelper.getWritableDatabase();
         Cursor cursor = database.query(dbHelper.TABLE_NAME, null, null, null, null, null, null);
-        cursor.moveToFirst();
-        do
-        {
-            TableRow tableRow = new TableRow(this);
-            TextView wordTextView = new TextView(this);
-            TextView translationTextView = new TextView(this);
-            word = cursor.getString(1);
-            translation = cursor.getString(2);
-            TextView word_table_header = (TextView) findViewById(R.id.word_table_header);
-            params = word_table_header.getLayoutParams();
-            wordTextView.setLayoutParams(params);
-            wordTextView.setPaddingRelative(4, 0, 0, 0);
-            wordTextView.setBackgroundResource(R.drawable.cell_background);
-            wordTextView.setText(word);
+        if(cursor.moveToFirst()) {
+            do {
+                TableRow tableRow = new TableRow(this);
+                TextView wordTextView = new TextView(this);
+                TextView translationTextView = new TextView(this);
+                word = cursor.getString(1);
+                translation = cursor.getString(2);
 
-            TextView translation_table_header = (TextView) findViewById(R.id.translation_table_header);
-            params = translation_table_header.getLayoutParams();
-            translationTextView.setLayoutParams(params);
-            translationTextView.setPaddingRelative(4, 0, 0, 0);
-            translationTextView.setBackgroundResource(R.drawable.cell_background);
-            translationTextView.setText(translation);
+                TextView word_table_header = (TextView) findViewById(R.id.word_table_header);
+                params = word_table_header.getLayoutParams();
+                wordTextView.setLayoutParams(params);
+                wordTextView.setPaddingRelative(4, 0, 0, 0);
+                wordTextView.setBackgroundResource(R.drawable.cell_background);
+                wordTextView.setText(word);
+                wordTextView.setOnClickListener(this);
 
-            tableRow.addView(wordTextView);
-            tableRow.addView(translationTextView);
-            vocabulary_table.addView(tableRow);
+                TextView translation_table_header = (TextView) findViewById(R.id.translation_table_header);
+                params = translation_table_header.getLayoutParams();
+                translationTextView.setLayoutParams(params);
+                translationTextView.setPaddingRelative(4, 0, 0, 0);
+                translationTextView.setBackgroundResource(R.drawable.cell_background);
+                translationTextView.setText(translation);
 
+                tableRow.addView(wordTextView);
+                tableRow.addView(translationTextView);
+                vocabulary_table.addView(tableRow);
+
+            }
+            while (cursor.moveToNext());
         }
-        while (cursor.moveToNext());
         database.close();
         cursor.close();
+    }
+
+    @Override
+    public void onClick(View view) {
+        TextView tv=(TextView)view;
+        Intent intent=new Intent(this, EditActivity.class);
+        intent.putExtra(EditActivity.TAG, tv.getText().toString());
+        startActivity(intent);
+
     }
 }
