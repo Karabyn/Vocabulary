@@ -41,15 +41,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Spinner spinner = (Spinner)findViewById(R.id.SpinVoc);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, langSpinner);
         spinner.setAdapter(adapter);
+        first_table_display();
     }
 
     protected void onStart() {
         super.onStart();
     }
 
-    protected void onResume() { super.onResume();
-    first_table_display();
-    }
+    protected void onResume() { super.onResume();  }
 
     protected void onDestroy() {
         super.onDestroy();
@@ -197,8 +196,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         TextView tv=(TextView)view;
+        database = dbHelper.getWritableDatabase();
+        Cursor cursor = database.query(dbHelper.TABLE_NAME, null, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        String translation="";
+        do
+        {
+            if(cursor.getString(1).equals(tv.getText().toString()))
+            {
+                translation=cursor.getString(2);
+            }
+        }
+        while(cursor.moveToNext());
+        database.close();
+        cursor.close();
+
         Intent intent=new Intent(this, EditActivity.class);
-        intent.putExtra(EditActivity.TAG, tv.getText().toString());
+        intent.putExtra(EditActivity.TAG_N, tv.getText().toString());
+        intent.putExtra(EditActivity.TAG_T, translation);
         startActivity(intent);
 
     }

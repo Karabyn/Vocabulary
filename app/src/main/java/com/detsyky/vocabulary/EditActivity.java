@@ -6,47 +6,40 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 public class EditActivity extends AppCompatActivity {
 
-    private DatabaseHelper dbHelper;
-    SQLiteDatabase database;
-    String name;
-    public static final String TAG="message";
+
+
+    String name,translation;
+    public static final String TAG_N="message_n";
+    public static final String TAG_T="message_t";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-        dbHelper = new DatabaseHelper(this);
         Intent intent=getIntent();
-        name=intent.getStringExtra(TAG);
+        name=intent.getStringExtra(TAG_N);
+        translation=intent.getStringExtra(TAG_T);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TextView tv_name=(TextView)findViewById(R.id.word_etable);
+        TextView tv_translation=(TextView)findViewById(R.id.translation_etable);
+        tv_name.setText(name);
+        tv_translation.setText(translation);
+    }
     public void Edit(View view)
     {
-        String c_name,e_name;
-        android.widget.EditText edit=(android.widget.EditText)findViewById(R.id.et2);
-        e_name=edit.getText().toString();
-        database = dbHelper.getWritableDatabase();
-        Cursor cursor = database.query(dbHelper.TABLE_NAME,null,null,null,null,null,null);
-        cursor.moveToFirst();
-        do
-        {
-            c_name=cursor.getString(1);
-            if(name.equals(c_name))
-            {
-                ContentValues cv = new ContentValues();
-                cv.put(DatabaseHelper.COLUMN_TRANSLATE, e_name);
-                database.update(DatabaseHelper.TABLE_NAME, cv, "_id" + " = ?", new String[]{cursor.getString(0)});
-            }
-        }
-        while(cursor.moveToNext());
-        database.close();
-        cursor.close();
-        Intent intent2=new Intent(this, MainActivity.class);
-        startActivity(intent2);
-
+        Intent intent=new Intent(this, EditActivitySecond.class);
+        intent.putExtra(EditActivity.TAG_N,name);
+        intent.putExtra(EditActivity.TAG_T,translation);
+        startActivity(intent);
     }
 }
